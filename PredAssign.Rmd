@@ -1,0 +1,36 @@
+---
+title: "Data analysis"
+author: "D. Mendez"
+date: "31/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Summary
+In this project, the goal is to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. I'll be using the train set to train a model that will give me predictions on the test data set.
+
+## Data treatment
+
+I'll download the data and store it appropiately. Moreover, the classe variable is transformed to a factor.
+
+```{r, include=FALSE}
+library(dplyr)
+trainUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+testUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+training <- as_tibble(read.csv(url(trainUrl)))
+testing <- as_tibble(read.csv(url(testUrl)))
+training$classe <- factor(training$classe)
+```
+
+## Preliminary study
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
