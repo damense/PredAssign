@@ -1,0 +1,80 @@
+---
+title: "Pred Assignment"
+author: "D. Mendez"
+date: "02/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Summary
+In this project, the goal is to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. I'll be using the train set to train a model that will give me predictions on the test data set.
+
+## Data treatment
+
+I'll download the data and store it appropiately. Moreover, the classe variable is transformed to a factor.
+
+```{r, include=FALSE}
+library(dplyr); library(caret)
+trainUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+testUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+training <- as_tibble(read.csv(url(trainUrl)))
+testing <- as_tibble(read.csv(url(testUrl)))
+
+```
+
+## Preliminary study
+
+Looking at the data, 42% of the variables are more than 95% NAs and 23% have a NA variance
+
+```{r, include=FALSE}
+trainData <- training[!sapply(training, var) %in% c(0, NA)]
+trainData$classe <- factor(training$classe)
+
+```
+
+## Fit the model
+
+A random forest method is used. A couple of settings are added to allow for the model to perform fast.
+
+```{r, include=FALSE}
+
+model <- train(classe~.,
+               data=trainData,
+               preProcess='pca',
+               model="rf",
+               tuneGrid=data.frame(mtry=3))
+```
+
+## Assestment of the model
+
+Checking the confusion matrix we can asses how good the model is
+
+```{r}
+print(confusionMatrix(model))
+```
+
+Based on the results, the average accuracy of the model is 99.12% which is good enough.
+
+## Code
+```{r,eval=FALSE}
+library(dplyr); library(caret)
+trainUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+testUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+training <- as_tibble(read.csv(url(trainUrl)))
+testing <- as_tibble(read.csv(url(testUrl)))
+trainData <- training[!sapply(training, var) %in% c(0, NA)]
+trainData$classe <- factor(training$classe)
+
+model <- train(classe~.,
+               data=trainData,
+               preProcess='pca',
+               model="rf",
+               tuneGrid=data.frame(mtry=3))
+print(confusionMatrix(model))
+
+
+```
+
